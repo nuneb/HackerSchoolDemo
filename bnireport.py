@@ -5,7 +5,7 @@ import xlwt
 
 from xlrd import cellname, XL_CELL_TEXT
 
-workbook = xlrd.open_workbook( '/cygdrive/c//Users/nboyadjian/Desktop/Google Drive/Fabulous Statistics.xlsx')
+workbook = xlrd.open_workbook( './bnidatabefore.xlsx')
 sheet = workbook.sheet_by_name('Raw Data')
 #print sheet.name#print sheet.nrows#print sheet.ncols
 
@@ -45,8 +45,9 @@ report = {} #create dictionary for storing member data
 # loop over entire table and save relevant data
 for row_index in range(1, sheet.nrows):
     name = sheet.cell(row_index, memberName_index).value
-    
-    print name
+    # if the cell is empty skip it
+    if name == '':
+        continue 
     a = sheet.cell(row_index, a_index).value
     gi = sheet.cell(row_index, gi_index).value
     gi = getValidatedValue(gi)
@@ -70,9 +71,9 @@ for row_index in range(1, sheet.nrows):
         report[name]['weeks'] += 1
         report[name]['ihaves'] += gi + go + v + meet
 
-#for name in sorted(report.keys()):
-#    score = (report[name]['ihaves'] - report[name]['weeks'])
-#    print name, report[name]['ihaves'], report[name]['weeks'], score
+for name in sorted(report.keys()):
+    score = (report[name]['ihaves'] - report[name]['weeks'])
+    print name, report[name]['ihaves'], report[name]['weeks'], score
 
 #data = [sheet.cell_value(0, col) for col in range(sheet.ncols)]
 
