@@ -4,6 +4,7 @@ import xlrd
 import xlwt
 
 from xlrd import cellname, XL_CELL_TEXT
+from xlwt import *
 
 workbook = xlrd.open_workbook( './bnidatabefore.xlsx')
 sheet = workbook.sheet_by_name('Raw Data')
@@ -72,15 +73,28 @@ for row_index in range(1, sheet.nrows):
         report[name]['ihaves'] += gi + go + v + meet
 
 for name in sorted(report.keys()):
-    score = (report[name]['ihaves'] - report[name]['weeks'])
-    print name, report[name]['ihaves'], report[name]['weeks'], score
+    ihaves = report[name]['ihaves']
+    weeks = report[name]['weeks']
+    score = ihaves - weeks
+    print name, ihaves, weeks, score
 
-#data = [sheet.cell_value(0, col) for col in range(sheet.ncols)]
+workbook = xlwt.Workbook()
+sheet = workbook.add_sheet('CumulativeScore')
 
-#workbook = xlwt.Workbook()
-#sheet = workbook.add_sheet('Baseline')
+bold = xlwt.easyxf("font: bold on")
 
-#for index, value in enumerate(data):
-#    sheet.write(0, index, value)
+sheet.write(0,0, 'Full Name', bold)
+sheet.write(0,1, 'IHaves', bold)
+sheet.write(0,2, '#Weeks', bold)
+sheet.write(0,3, 'Score', bold)
 
-#workbook.save('/cygdrive/c//Users/nboyadjian/Desktop/ExcelPython/BaselinePerformance.xls')
+row = 1
+for name in sorted(report.keys()):
+    sheet.write(row, 0, name)
+    sheet.write(row, 1, report[name]['ihaves'])
+    sheet.write(row, 2, report[name]['weeks'])
+    score = report[name]['ihaves'] - report[name]['weeks']
+    sheet.write(row, 3, score)
+    row = row + 1
+
+workbook.save('./Performance.xls')
